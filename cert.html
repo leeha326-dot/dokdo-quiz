@@ -340,7 +340,7 @@
       <h2 id="doneTitle">접수 완료!</h2>
       <p class="lead" id="doneInfo"></p>
       <div class="done-rank" id="doneRank"></div>
-      <p class="lead" id="doneNote">선생님이 캡처를 확인한 뒤 선물을 안내해 드려요.</p>
+      <p class="lead" id="doneNote">선생님이 확인 후, <b>10월 26일 월요일 1교시</b>에 상품 수령자 명단을 발표할 예정입니다.<br>명단 확인 후 <b>13:30-14:20</b>에 <b>이하은 선생님(3학년 교무실)</b>에게 오세요.</p>
     </div>
   </div>
 
@@ -420,8 +420,9 @@ function showDone(rank,status,num,name){
   $('entryScreen').classList.add('hidden'); $('doneScreen').classList.remove('hidden');
   $('doneInfo').innerHTML=`<b>${esc(num)} ${esc(name)}</b> · ${KIND_LABEL[kind]}`;
   $('doneRank').textContent=`${rank}번째 접수`;
-  $('doneNote').textContent = status==='approved' ? '확인이 끝났어요. 선물은 담임 선생님이 안내해 드려요.'
-    : status==='rejected' ? '캡처를 다시 올려 주세요.' : '선생님이 캡처를 확인한 뒤 선물을 안내해 드려요.';
+  const PENDING_NOTE = '선생님이 확인 후, <b>10월 26일 월요일 1교시</b>에 상품 수령자 명단을 발표할 예정입니다.<br>명단 확인 후 <b>13:30-14:20</b>에 <b>이하은 선생님(3학년 교무실)</b>에게 오세요.';
+  $('doneNote').innerHTML = status==='approved' ? '확인이 끝났어요.<br>' + PENDING_NOTE
+    : status==='rejected' ? '캡처를 다시 올려 주세요.' : PENDING_NOTE;
   window.scrollTo({top:0});
 }
 $('submitBtn').addEventListener('click', async ()=>{
