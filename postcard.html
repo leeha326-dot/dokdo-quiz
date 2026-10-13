@@ -8,27 +8,26 @@
 <style>
   :root{
     --sea-night:#081a28; --sea-deep:#10293c; --mist:#e9eef1; --mist-dim:#a9bcc7; --ink:#0e1d27;
-    --basalt:#2b343c; --basalt-lit:#3d4952; --dawn:#eaa32c; --dawn-deep:#b97a13; --o:#2f8f77; --x:#c05a4e;
+    --basalt:#2b343c; --basalt-lit:#3d4952; --dim:#5b6b75; --dawn:#eaa32c; --dawn-deep:#b97a13; --o:#2f8f77; --x:#c05a4e;
     --c-quiz:#d6502b; --c-escape:#2b6cb0; --c-post:#2e7d4f; --c-run:#1f3a5f;
   }
   *{box-sizing:border-box;}
-  html,body{margin:0;padding:0;min-height:100%;
-    background:radial-gradient(120% 60% at 50% 0%, #1b3d52 0%, var(--sea-deep) 45%, var(--sea-night) 100%);
-    background-attachment:fixed;color:var(--mist);font-family:'IBM Plex Sans KR',system-ui,sans-serif;-webkit-font-smoothing:antialiased;}
+  html,body{margin:0;padding:0;min-height:100%;background:#ffffff;color:var(--ink);
+    font-family:'IBM Plex Sans KR',system-ui,sans-serif;-webkit-font-smoothing:antialiased;}
   .stage{max-width:600px;margin:0 auto;padding:30px 18px 64px;min-height:100vh;display:flex;flex-direction:column;}
   .hidden{display:none !important;}
 
-  .back{display:inline-flex;align-items:center;gap:6px;color:var(--mist-dim);text-decoration:none;font-size:13px;margin-bottom:14px;}
-  .back:hover{color:var(--mist);}
+  .back{display:inline-flex;align-items:center;gap:6px;color:var(--dim);text-decoration:none;font-size:13px;margin-bottom:14px;}
+  .back:hover{color:var(--ink);}
   .masthead{text-align:center;margin-bottom:24px;}
   .horizon{display:block;width:150px;height:62px;margin:0 auto 12px;}
-  .event-date{font-family:'Gowun Batang',serif;font-size:14px;color:var(--dawn);letter-spacing:.06em;margin:0 0 4px;}
+  .event-date{font-family:'Gowun Batang',serif;font-size:14px;color:var(--dawn-deep);letter-spacing:.06em;margin:0 0 4px;}
   .event-title{font-family:'Gowun Batang',serif;font-weight:700;font-size:clamp(27px,7.5vw,36px);margin:0;line-height:1.25;}
-  .event-sub{font-size:13px;color:var(--mist-dim);margin:9px 0 0;line-height:1.6;}
-  .coords{font-size:11.5px;color:rgba(169,188,199,.6);margin-top:7px;font-variant-numeric:tabular-nums;}
+  .event-sub{font-size:13px;color:var(--dim);margin:9px 0 0;line-height:1.6;}
+  .coords{font-size:11.5px;color:rgba(14,29,39,.45);margin-top:7px;font-variant-numeric:tabular-nums;}
 
   .panel{background:var(--mist);color:var(--ink);border-radius:6px 6px 18px 18px;padding:28px 24px 26px;
-    box-shadow:0 20px 44px rgba(0,0,0,.4);border-top:4px solid var(--dawn);}
+    box-shadow:0 12px 32px rgba(14,29,39,.14);border-top:4px solid var(--dawn);}
   .panel h2{font-family:'Gowun Batang',serif;font-weight:700;font-size:21px;margin:0 0 10px;text-align:center;}
   .lead{font-size:14px;line-height:1.75;color:rgba(14,29,39,.72);text-align:center;margin:0 0 20px;}
   .warning{border:1.5px solid var(--dawn-deep);border-radius:12px;background:linear-gradient(180deg,rgba(234,163,44,.16),rgba(234,163,44,.05));padding:16px 18px;margin-bottom:18px;}
@@ -57,7 +56,7 @@
 
   .field{margin-bottom:13px;}
   .field label{display:block;font-size:12.5px;font-weight:600;margin-bottom:6px;}
-  .field input{width:100%;padding:13px 14px;font-size:15px;border:1.5px solid rgba(14,29,39,.18);border-radius:10px;background:#fff;color:var(--ink);font-family:inherit;}
+  .field input{width:100%;padding:13px 14px;font-size:16px;border:1.5px solid rgba(14,29,39,.18);border-radius:10px;background:#fff;color:var(--ink);font-family:inherit;}
   .field input:focus{outline:none;border-color:var(--dawn);box-shadow:0 0 0 3px rgba(234,163,44,.25);}
   .confirm{display:flex;gap:10px;align-items:flex-start;font-size:13px;line-height:1.55;margin:16px 0 6px;cursor:pointer;}
   .confirm input{width:19px;height:19px;flex-shrink:0;margin:1px 0 0;accent-color:var(--dawn-deep);}
@@ -90,10 +89,10 @@
   .pc-stamp{position:absolute;top:12px;right:14px;width:52px;height:60px;border-radius:3px;border:2px dashed rgba(14,29,39,.28);display:flex;align-items:center;justify-content:center;background:#fff;}
   .pc-stamp svg{width:40px;height:34px;}
   .pc-to{font-family:'Gowun Batang',serif;font-size:15px;margin:2px 0 3px;} .pc-to b{font-size:21px;font-weight:700;margin-left:6px;}
-  .pc-coord{font-size:10.5px;color:rgba(14,29,39,.5);margin-bottom:12px;font-variant-numeric:tabular-nums;}
+  .pc-coord{font-size:10.5px;color:rgba(14,29,39,.5);margin-bottom:12px;font-variant-numeric:tabular-nums;padding-right:64px;line-height:1.5;}
   .pc-rule{height:1px;background:repeating-linear-gradient(to right,rgba(14,29,39,.18) 0 7px,transparent 7px 13px);margin-bottom:12px;}
-  .postcard textarea{width:100%;min-height:132px;resize:vertical;border:none;outline:none;background:transparent;font-family:inherit;font-size:14.5px;line-height:2.05;color:var(--ink);
-    background-image:repeating-linear-gradient(transparent 0 28.7px, rgba(14,29,39,.13) 28.7px 29.7px);}
+  .postcard textarea{width:100%;min-height:132px;resize:vertical;border:none;outline:none;background:transparent;font-family:inherit;font-size:16px;line-height:2.05;color:var(--ink);
+    background-image:repeating-linear-gradient(transparent 0 31.8px, rgba(14,29,39,.13) 31.8px 32.8px);}
   .postcard textarea::placeholder{color:rgba(14,29,39,.33);}
   .pc-foot{display:flex;justify-content:space-between;align-items:baseline;margin-top:9px;font-size:11.5px;color:rgba(14,29,39,.5);gap:10px;}
   .pc-foot .pc-count{font-variant-numeric:tabular-nums;} .pc-foot .pc-count.short{color:var(--x);}
@@ -112,12 +111,12 @@
       <circle cx="75" cy="30" r="15" fill="#eaa32c" opacity=".9"/>
       <path d="M46 46 L58 22 L66 31 L72 26 L80 46 Z" fill="#0e1d27"/>
       <path d="M84 46 L92 30 L100 38 L104 34 L110 46 Z" fill="#0e1d27"/>
-      <path d="M0 47 H150" stroke="#e9eef1" stroke-opacity=".35" stroke-width="1.2"/>
-      <path d="M8 53 q10 -3 20 0 t20 0 t20 0 t20 0 t20 0 t20 0" fill="none" stroke="#e9eef1" stroke-opacity=".18" stroke-width="1.2"/>
+      <path d="M0 47 H150" stroke="#0e1d27" stroke-opacity=".35" stroke-width="1.2"/>
+      <path d="M8 53 q10 -3 20 0 t20 0 t20 0 t20 0 t20 0 t20 0" fill="none" stroke="#0e1d27" stroke-opacity=".18" stroke-width="1.2"/>
     </svg>
     <p class="event-date">활동 3 · 10월 19일 ~ 25일</p>
     <h1 class="event-title">독도에게 엽서쓰기</h1>
-    <p class="event-sub">짧아도 좋으니 독도에게 하고 싶은 말을 남겨 주세요.<br>엽서를 쓴 학생 선착순 100명에게 독도 김과 독도 샤프를 드려요.</p>
+    <p class="event-sub">짧아도 좋으니 독도에게 하고 싶은 말을 남겨 주세요.<br>선착순 100명에게 독도 김과 독도 샤프를 드려요.</p>
     
   </header>
 
@@ -138,7 +137,7 @@
       <div class="postcard">
         <div class="pc-stamp"><svg viewBox="0 0 40 34" aria-hidden="true"><circle cx="20" cy="11" r="6" fill="#eaa32c"/><path d="M7 24 L13 12 L17 17 L20 14 L24 24 Z" fill="#0e1d27"/><path d="M24 24 L28 17 L32 21 L34 19 L37 24 Z" fill="#0e1d27"/><path d="M2 26 H38" stroke="#0e1d27" stroke-opacity=".35" stroke-width="1"/></svg></div>
         <p class="pc-to">받는 이<b>독도</b></p>
-        <p class="pc-coord">북위 37°14′ 동경 131°52′ · 경상북도 울릉군 울릉읍 독도리</p>
+        <p class="pc-coord">북위 37°14′ 동경 131°52′<br>경상북도 울릉군 울릉읍 독도리</p>
         <div class="pc-rule"></div>
         <textarea id="pcText" maxlength="200" placeholder="예) 아직 가 본 적은 없지만, 오늘 네가 어디에 있는지 정확히 알게 됐어."></textarea>
         <div class="pc-foot"><span class="pc-count" id="pcCount">0 / 200자</span><span class="pc-from" id="pcFrom">보내는 이</span></div>

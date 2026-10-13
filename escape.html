@@ -8,27 +8,26 @@
 <style>
   :root{
     --sea-night:#081a28; --sea-deep:#10293c; --mist:#e9eef1; --mist-dim:#a9bcc7; --ink:#0e1d27;
-    --basalt:#2b343c; --basalt-lit:#3d4952; --dawn:#eaa32c; --dawn-deep:#b97a13; --o:#2f8f77; --x:#c05a4e;
+    --basalt:#2b343c; --basalt-lit:#3d4952; --dim:#5b6b75; --dawn:#eaa32c; --dawn-deep:#b97a13; --o:#2f8f77; --x:#c05a4e;
     --c-quiz:#d6502b; --c-escape:#2b6cb0; --c-post:#2e7d4f; --c-run:#1f3a5f;
   }
   *{box-sizing:border-box;}
-  html,body{margin:0;padding:0;min-height:100%;
-    background:radial-gradient(120% 60% at 50% 0%, #1b3d52 0%, var(--sea-deep) 45%, var(--sea-night) 100%);
-    background-attachment:fixed;color:var(--mist);font-family:'IBM Plex Sans KR',system-ui,sans-serif;-webkit-font-smoothing:antialiased;}
+  html,body{margin:0;padding:0;min-height:100%;background:#ffffff;color:var(--ink);
+    font-family:'IBM Plex Sans KR',system-ui,sans-serif;-webkit-font-smoothing:antialiased;}
   .stage{max-width:600px;margin:0 auto;padding:30px 18px 64px;min-height:100vh;display:flex;flex-direction:column;}
   .hidden{display:none !important;}
 
-  .back{display:inline-flex;align-items:center;gap:6px;color:var(--mist-dim);text-decoration:none;font-size:13px;margin-bottom:14px;}
-  .back:hover{color:var(--mist);}
+  .back{display:inline-flex;align-items:center;gap:6px;color:var(--dim);text-decoration:none;font-size:13px;margin-bottom:14px;}
+  .back:hover{color:var(--ink);}
   .masthead{text-align:center;margin-bottom:24px;}
   .horizon{display:block;width:150px;height:62px;margin:0 auto 12px;}
-  .event-date{font-family:'Gowun Batang',serif;font-size:14px;color:var(--dawn);letter-spacing:.06em;margin:0 0 4px;}
+  .event-date{font-family:'Gowun Batang',serif;font-size:14px;color:var(--dawn-deep);letter-spacing:.06em;margin:0 0 4px;}
   .event-title{font-family:'Gowun Batang',serif;font-weight:700;font-size:clamp(27px,7.5vw,36px);margin:0;line-height:1.25;}
-  .event-sub{font-size:13px;color:var(--mist-dim);margin:9px 0 0;line-height:1.6;}
-  .coords{font-size:11.5px;color:rgba(169,188,199,.6);margin-top:7px;font-variant-numeric:tabular-nums;}
+  .event-sub{font-size:13px;color:var(--dim);margin:9px 0 0;line-height:1.6;}
+  .coords{font-size:11.5px;color:rgba(14,29,39,.45);margin-top:7px;font-variant-numeric:tabular-nums;}
 
   .panel{background:var(--mist);color:var(--ink);border-radius:6px 6px 18px 18px;padding:28px 24px 26px;
-    box-shadow:0 20px 44px rgba(0,0,0,.4);border-top:4px solid var(--dawn);}
+    box-shadow:0 12px 32px rgba(14,29,39,.14);border-top:4px solid var(--dawn);}
   .panel h2{font-family:'Gowun Batang',serif;font-weight:700;font-size:21px;margin:0 0 10px;text-align:center;}
   .lead{font-size:14px;line-height:1.75;color:rgba(14,29,39,.72);text-align:center;margin:0 0 20px;}
   .warning{border:1.5px solid var(--dawn-deep);border-radius:12px;background:linear-gradient(180deg,rgba(234,163,44,.16),rgba(234,163,44,.05));padding:16px 18px;margin-bottom:18px;}
@@ -57,7 +56,7 @@
 
   .field{margin-bottom:13px;}
   .field label{display:block;font-size:12.5px;font-weight:600;margin-bottom:6px;}
-  .field input{width:100%;padding:13px 14px;font-size:15px;border:1.5px solid rgba(14,29,39,.18);border-radius:10px;background:#fff;color:var(--ink);font-family:inherit;}
+  .field input{width:100%;padding:13px 14px;font-size:16px;border:1.5px solid rgba(14,29,39,.18);border-radius:10px;background:#fff;color:var(--ink);font-family:inherit;}
   .field input:focus{outline:none;border-color:var(--dawn);box-shadow:0 0 0 3px rgba(234,163,44,.25);}
   .confirm{display:flex;gap:10px;align-items:flex-start;font-size:13px;line-height:1.55;margin:16px 0 6px;cursor:pointer;}
   .confirm input{width:19px;height:19px;flex-shrink:0;margin:1px 0 0;accent-color:var(--dawn-deep);}
@@ -111,8 +110,8 @@
       <circle cx="75" cy="30" r="15" fill="#eaa32c" opacity=".9"/>
       <path d="M46 46 L58 22 L66 31 L72 26 L80 46 Z" fill="#0e1d27"/>
       <path d="M84 46 L92 30 L100 38 L104 34 L110 46 Z" fill="#0e1d27"/>
-      <path d="M0 47 H150" stroke="#e9eef1" stroke-opacity=".35" stroke-width="1.2"/>
-      <path d="M8 53 q10 -3 20 0 t20 0 t20 0 t20 0 t20 0 t20 0" fill="none" stroke="#e9eef1" stroke-opacity=".18" stroke-width="1.2"/>
+      <path d="M0 47 H150" stroke="#0e1d27" stroke-opacity=".35" stroke-width="1.2"/>
+      <path d="M8 53 q10 -3 20 0 t20 0 t20 0 t20 0 t20 0 t20 0" fill="none" stroke="#0e1d27" stroke-opacity=".18" stroke-width="1.2"/>
     </svg>
     <p class="event-date">활동 2 · 10월 19일 ~ 25일</p>
     <h1 class="event-title">독도 방탈출</h1>
