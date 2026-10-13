@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>독도에게 엽서쓰기</title>
+<link href="https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@400;700&family=IBM+Plex+Sans+KR:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --sea-night:#081a28; --sea-deep:#10293c; --mist:#e9eef1; --mist-dim:#a9bcc7; --ink:#0e1d27;
+    --basalt:#2b343c; --basalt-lit:#3d4952; --dawn:#eaa32c; --dawn-deep:#b97a13; --o:#2f8f77; --x:#c05a4e;
+    --c-quiz:#d6502b; --c-escape:#2b6cb0; --c-post:#2e7d4f; --c-run:#1f3a5f;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;min-height:100%;
+    background:radial-gradient(120% 60% at 50% 0%, #1b3d52 0%, var(--sea-deep) 45%, var(--sea-night) 100%);
+    background-attachment:fixed;color:var(--mist);font-family:'IBM Plex Sans KR',system-ui,sans-serif;-webkit-font-smoothing:antialiased;}
+  .stage{max-width:600px;margin:0 auto;padding:30px 18px 64px;min-height:100vh;display:flex;flex-direction:column;}
+  .hidden{display:none !important;}
+
+  .back{display:inline-flex;align-items:center;gap:6px;color:var(--mist-dim);text-decoration:none;font-size:13px;margin-bottom:14px;}
+  .back:hover{color:var(--mist);}
+  .masthead{text-align:center;margin-bottom:24px;}
+  .horizon{display:block;width:150px;height:62px;margin:0 auto 12px;}
+  .event-date{font-family:'Gowun Batang',serif;font-size:14px;color:var(--dawn);letter-spacing:.06em;margin:0 0 4px;}
+  .event-title{font-family:'Gowun Batang',serif;font-weight:700;font-size:clamp(27px,7.5vw,36px);margin:0;line-height:1.25;}
+  .event-sub{font-size:13px;color:var(--mist-dim);margin:9px 0 0;line-height:1.6;}
+  .coords{font-size:11.5px;color:rgba(169,188,199,.6);margin-top:7px;font-variant-numeric:tabular-nums;}
+
+  .panel{background:var(--mist);color:var(--ink);border-radius:6px 6px 18px 18px;padding:28px 24px 26px;
+    box-shadow:0 20px 44px rgba(0,0,0,.4);border-top:4px solid var(--dawn);}
+  .panel h2{font-family:'Gowun Batang',serif;font-weight:700;font-size:21px;margin:0 0 10px;text-align:center;}
+  .lead{font-size:14px;line-height:1.75;color:rgba(14,29,39,.72);text-align:center;margin:0 0 20px;}
+  .warning{border:1.5px solid var(--dawn-deep);border-radius:12px;background:linear-gradient(180deg,rgba(234,163,44,.16),rgba(234,163,44,.05));padding:16px 18px;margin-bottom:18px;}
+  .warning h3{font-family:'Gowun Batang',serif;font-size:16px;margin:0 0 8px;color:#7d5309;}
+  .warning ul{margin:0;padding-left:18px;font-size:13.5px;line-height:1.85;color:rgba(14,29,39,.85);}
+  .warning ul b{color:#7d5309;}
+  .rule{display:flex;gap:13px;align-items:center;padding:13px 15px;border-radius:12px;margin-bottom:9px;}
+  .rule .r-ic{font-size:25px;flex-shrink:0;width:30px;text-align:center;}
+  .rule.top{background:rgba(234,163,44,.14);border:1px solid rgba(234,163,44,.45);}
+  .rule .r-txt b{display:block;font-size:14px;margin-bottom:2px;}
+  .rule .r-txt span{font-size:12.5px;color:rgba(14,29,39,.62);line-height:1.5;}
+  .stock{border:1px solid rgba(14,29,39,.14);border-radius:12px;padding:15px 16px;margin:16px 0 18px;background:rgba(255,255,255,.55);}
+  .stock-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;gap:12px;flex-wrap:wrap;}
+  .stock-img{flex:1 1 0;min-width:0;max-width:141px;height:auto;display:block;margin:0 auto;transform:translateX(-16px);filter:drop-shadow(0 3px 5px rgba(14,29,39,.3));}
+  @media (max-width:640px){.stock-img{order:3;flex:0 0 100%;max-width:184px;margin:6px auto 4px;transform:none;}}
+  .stock-label{font-size:12.5px;font-weight:600;display:flex;align-items:center;gap:7px;}
+  .live-dot{width:8px;height:8px;border-radius:50%;background:var(--o);animation:pulse 2s infinite;}
+  @keyframes pulse{0%{box-shadow:0 0 0 0 rgba(47,143,119,.55);}70%{box-shadow:0 0 0 8px rgba(47,143,119,0);}100%{box-shadow:0 0 0 0 rgba(47,143,119,0);}}
+  .stock-count{font-variant-numeric:tabular-nums;white-space:nowrap;}
+  .stock-count b{font-family:'Gowun Batang',serif;font-weight:700;font-size:28px;color:var(--dawn-deep);}
+  .stock-count span{font-size:14px;color:rgba(14,29,39,.45);}
+  .stock-bar{height:8px;border-radius:999px;background:rgba(14,29,39,.12);overflow:hidden;}
+  .stock-bar i{display:block;height:100%;width:0%;border-radius:999px;background:linear-gradient(90deg,#f4cd80,var(--dawn));transition:width .5s ease;}
+  .stock-note{font-size:11.5px;color:rgba(14,29,39,.58);margin-top:9px;line-height:1.5;}
+  .stock.sold-out .stock-count b{color:var(--x);} .stock.sold-out .stock-bar i{background:var(--x);}
+
+  .field{margin-bottom:13px;}
+  .field label{display:block;font-size:12.5px;font-weight:600;margin-bottom:6px;}
+  .field input{width:100%;padding:13px 14px;font-size:15px;border:1.5px solid rgba(14,29,39,.18);border-radius:10px;background:#fff;color:var(--ink);font-family:inherit;}
+  .field input:focus{outline:none;border-color:var(--dawn);box-shadow:0 0 0 3px rgba(234,163,44,.25);}
+  .confirm{display:flex;gap:10px;align-items:flex-start;font-size:13px;line-height:1.55;margin:16px 0 6px;cursor:pointer;}
+  .confirm input{width:19px;height:19px;flex-shrink:0;margin:1px 0 0;accent-color:var(--dawn-deep);}
+  .form-error{color:var(--x);font-size:13px;min-height:19px;margin:3px 0 6px;text-align:center;}
+  .big-btn{width:100%;background:var(--ink);color:var(--mist);border:none;font-family:inherit;font-weight:600;font-size:16.5px;padding:15px;border-radius:999px;cursor:pointer;box-shadow:0 10px 22px rgba(14,29,39,.3);transition:transform .12s ease;text-decoration:none;display:block;text-align:center;}
+  .big-btn:hover{transform:translateY(-2px);} .big-btn:active{transform:translateY(1px);}
+  .big-btn:disabled{opacity:.45;cursor:not-allowed;transform:none;}
+  .big-btn.gold{background:var(--dawn);color:var(--ink);box-shadow:0 10px 22px rgba(234,163,44,.3);}
+  .big-btn.ghost{background:transparent;color:var(--ink);border:1.5px solid rgba(14,29,39,.25);box-shadow:none;}
+  .fineprint{font-size:11.5px;color:rgba(14,29,39,.5);text-align:center;margin-top:13px;line-height:1.6;}
+  .spinner{display:inline-block;width:15px;height:15px;border:2.5px solid rgba(233,238,241,.3);border-top-color:var(--dawn);border-radius:50%;animation:spin .7s linear infinite;vertical-align:-2px;}
+  @keyframes spin{to{transform:rotate(360deg);}}
+  .result-panel{text-align:center;}
+  .seal{display:inline-flex;align-items:center;gap:7px;background:rgba(47,143,119,.14);color:#1d6f5b;border:1px solid rgba(47,143,119,.4);border-radius:999px;padding:6px 15px;font-size:12.5px;font-weight:600;margin-bottom:6px;}
+  .locked-icon{font-size:44px;margin-bottom:6px;}
+  .prize-award{margin:4px 0 18px;padding:24px 20px;border-radius:14px;}
+  .prize-award.win{background:linear-gradient(150deg,#f6d590,var(--dawn));color:#432d06;box-shadow:0 12px 28px rgba(234,163,44,.35);}
+  .prize-award.none{background:rgba(14,29,39,.06);color:var(--ink);}
+  .prize-award .pa-icon{font-size:44px;}
+  .prize-award .pa-label{font-size:12px;font-weight:600;opacity:.75;margin-top:4px;}
+  .prize-award .pa-name{font-family:'Gowun Batang',serif;font-weight:700;font-size:22px;margin:5px 0 6px;}
+  .prize-award .pa-desc{font-size:13.5px;line-height:1.6;word-break:keep-all;}
+  .pickup{margin-top:14px;padding:13px 15px;border-radius:10px;background:rgba(0,0,0,.1);text-align:left;font-size:13px;line-height:1.75;}
+  .result-note{font-size:11.5px;color:rgba(14,29,39,.5);line-height:1.6;}
+  .next-links{display:flex;flex-direction:column;gap:9px;margin-top:16px;}
+  .toast{position:fixed;left:50%;bottom:28px;transform:translateX(-50%);background:var(--ink);color:var(--mist);padding:11px 22px;border-radius:999px;font-size:13.5px;box-shadow:0 10px 26px rgba(0,0,0,.4);z-index:50;}
+  @media (prefers-reduced-motion:reduce){*{transition:none !important;animation:none !important;}}
+
+  .postcard{position:relative;border:1px solid rgba(14,29,39,.22);border-radius:8px;background:#fffdf6;padding:16px 16px 12px;box-shadow:0 4px 0 rgba(14,29,39,.06);margin-bottom:6px;}
+  .pc-stamp{position:absolute;top:12px;right:14px;width:52px;height:60px;border-radius:3px;border:2px dashed rgba(14,29,39,.28);display:flex;align-items:center;justify-content:center;background:#fff;}
+  .pc-stamp svg{width:40px;height:34px;}
+  .pc-to{font-family:'Gowun Batang',serif;font-size:15px;margin:2px 0 3px;} .pc-to b{font-size:21px;font-weight:700;margin-left:6px;}
+  .pc-coord{font-size:10.5px;color:rgba(14,29,39,.5);margin-bottom:12px;font-variant-numeric:tabular-nums;}
+  .pc-rule{height:1px;background:repeating-linear-gradient(to right,rgba(14,29,39,.18) 0 7px,transparent 7px 13px);margin-bottom:12px;}
+  .postcard textarea{width:100%;min-height:132px;resize:vertical;border:none;outline:none;background:transparent;font-family:inherit;font-size:14.5px;line-height:2.05;color:var(--ink);
+    background-image:repeating-linear-gradient(transparent 0 28.7px, rgba(14,29,39,.13) 28.7px 29.7px);}
+  .postcard textarea::placeholder{color:rgba(14,29,39,.33);}
+  .pc-foot{display:flex;justify-content:space-between;align-items:baseline;margin-top:9px;font-size:11.5px;color:rgba(14,29,39,.5);gap:10px;}
+  .pc-foot .pc-count{font-variant-numeric:tabular-nums;} .pc-foot .pc-count.short{color:var(--x);}
+  .pc-from{font-family:'Gowun Batang',serif;color:rgba(14,29,39,.7);}
+  .pc-echo{text-align:left;background:#fffdf6;border:1px solid rgba(14,29,39,.16);border-radius:8px;padding:14px 15px;margin:0 0 18px;font-size:13.5px;line-height:1.85;white-space:pre-wrap;word-break:break-word;}
+  .pc-echo .pe-label{font-size:11px;letter-spacing:.1em;color:rgba(14,29,39,.45);margin-bottom:7px;font-weight:600;}
+  .done-rank{font-family:'Gowun Batang',serif;font-size:44px;font-weight:700;text-align:center;color:var(--dawn-deep);margin:6px 0;}
+
+</style>
+</head>
+<body>
+<div class="stage">
+  <a class="back" href="index.html">← 독도의 날 행사 홈</a>
+  <header class="masthead">
+    <svg class="horizon" viewBox="0 0 150 62" aria-label="동해 위로 해가 떠오르는 독도">
+      <circle cx="75" cy="30" r="15" fill="#eaa32c" opacity=".9"/>
+      <path d="M46 46 L58 22 L66 31 L72 26 L80 46 Z" fill="#0e1d27"/>
+      <path d="M84 46 L92 30 L100 38 L104 34 L110 46 Z" fill="#0e1d27"/>
+      <path d="M0 47 H150" stroke="#e9eef1" stroke-opacity=".35" stroke-width="1.2"/>
+      <path d="M8 53 q10 -3 20 0 t20 0 t20 0 t20 0 t20 0 t20 0" fill="none" stroke="#e9eef1" stroke-opacity=".18" stroke-width="1.2"/>
+    </svg>
+    <p class="event-date">활동 3 · 10월 19일 ~ 25일</p>
+    <h1 class="event-title">독도에게 엽서쓰기</h1>
+    <p class="event-sub">짧아도 좋으니 독도에게 하고 싶은 말을 남겨 주세요.<br>엽서를 쓴 학생 선착순 100명에게 독도 김과 독도 샤프를 드려요.</p>
+    
+  </header>
+
+  <div id="entryScreen">
+    <div class="panel">
+      <h2>엽서 쓰기</h2>
+      <div class="stock" id="stockBox">
+        <div class="stock-top">
+          <div class="stock-label"><span class="live-dot"></span> 지금까지 엽서를 쓴 학생</div>
+          <div class="stock-count"><b id="stockNum">–</b><span id="stockTotal"> / 100</span></div>
+        </div>
+        <div class="stock-bar"><i id="stockBar"></i></div>
+        <div class="stock-note" id="stockNote">현황을 불러오는 중…</div>
+      </div>
+      <div class="field"><label for="inpNum">학번</label><input id="inpNum" type="text" inputmode="numeric" placeholder="학번을 입력하세요" autocomplete="off"></div>
+      <div class="field"><label for="inpName">이름</label><input id="inpName" type="text" placeholder="이름을 입력하세요" autocomplete="off"></div>
+
+      <div class="postcard">
+        <div class="pc-stamp"><svg viewBox="0 0 40 34" aria-hidden="true"><circle cx="20" cy="11" r="6" fill="#eaa32c"/><path d="M7 24 L13 12 L17 17 L20 14 L24 24 Z" fill="#0e1d27"/><path d="M24 24 L28 17 L32 21 L34 19 L37 24 Z" fill="#0e1d27"/><path d="M2 26 H38" stroke="#0e1d27" stroke-opacity=".35" stroke-width="1"/></svg></div>
+        <p class="pc-to">받는 이<b>독도</b></p>
+        <p class="pc-coord">북위 37°14′ 동경 131°52′ · 경상북도 울릉군 울릉읍 독도리</p>
+        <div class="pc-rule"></div>
+        <textarea id="pcText" maxlength="200" placeholder="예) 아직 가 본 적은 없지만, 오늘 네가 어디에 있는지 정확히 알게 됐어."></textarea>
+        <div class="pc-foot"><span class="pc-count" id="pcCount">0 / 200자</span><span class="pc-from" id="pcFrom">보내는 이</span></div>
+      </div>
+      <p class="fineprint" style="margin-top:4px">50자 이상 200자 이내로 써 주세요.</p>
+
+      <div class="warning" style="margin-top:14px"><h3>상품 수령 안내</h3><ul><li>선생님이 확인 후, <b>10월 26일 월요일 1교시</b>에 상품 수령자 명단을 발표할 예정입니다.</li><li>명단 확인 후 <b>13:30-14:20</b>에 <b>이하은 선생님(3학년 교무실)</b>에게 오세요.</li></ul></div>
+      <label class="confirm" for="chkRead"><input type="checkbox" id="chkRead"><span>한 사람당 <b>엽서 한 장만</b> 보낼 수 있으며, 제출한 엽서가 <b>이름과 함께 게시판에 공개</b>되는 것에 동의합니다.</span></label>
+      <div class="form-error" id="formError"></div>
+      <button class="big-btn" id="submitBtn">엽서 보내기</button>
+    </div>
+  </div>
+
+  <div id="doneScreen" class="hidden">
+    <div class="panel result-panel">
+      <div class="seal" id="doneSeal">✓ 엽서를 보냈어요</div>
+      <h2 id="doneTitle">독도에게 잘 전해 드릴게요</h2>
+      <p class="lead" id="doneInfo"></p>
+      <div class="done-rank" id="doneRank"></div>
+      <div id="prizeAward"></div>
+      <div class="pc-echo" id="pcEcho"></div>
+      <div class="next-links"><a class="big-btn ghost" href="index.html">행사 홈으로</a></div>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+/* ===== Supabase 설정 (모든 페이지 공통) ===== */
+const SUPABASE_URL = "https://trpsopuukecsmwntznrm.supabase.co";
+const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRycHNvcHV1a2Vjc213bnR6bnJtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTE4NzI4ODQsImV4cCI6MjEwNzQ0ODg4NH0.mYIsHq6ncguO0lJ9i2kHo2Hup2gDrEH5PBAjc90_5FE";
+const PICKUP_HTML = '선생님이 확인 후, <b>10월 26일 월요일 1교시</b>에 상품 수령자 명단을 발표할 예정입니다.<br>명단 확인 후 <b>13:30-14:20</b>에 <b>이하은 선생님(3학년 교무실)</b>에게 오세요.';
+const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+const $ = id => document.getElementById(id);
+const esc = t => String(t ?? "").replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+/* 학번 표기 통일: 3601 → 30601 (학년 + 2자리 반 + 2자리 번호) */
+const normNum = raw => /^\d{4}$/.test(raw) ? raw[0]+'0'+raw[1]+raw.slice(2) : raw.replace(/\s+/g,'');
+const qs = new URLSearchParams(location.search);
+function toast(m){ let t=document.querySelector('.toast'); if(!t){t=document.createElement('div');t.className='toast';document.body.appendChild(t);}
+  t.textContent=m; t.style.display='block'; clearTimeout(toast._t); toast._t=setTimeout(()=>t.style.display='none',2200); }
+function prefill(){ const n=qs.get('num'), m=qs.get('name'); if(n&&$('inpNum')) $('inpNum').value=n; if(m&&$('inpName')) $('inpName').value=m; }
+function withStudent(href){ const n=$('inpNum')?.value.trim(), m=$('inpName')?.value.trim(); return n&&m ? href+'?num='+encodeURIComponent(n)+'&name='+encodeURIComponent(m) : href; }
+</script>
+
+<script>
+const MIN=50, MAX=200, PRIZE_NAME="독도 김 · 독도 샤프";
+let prizeTotal=100;
+prefill();
+const sync = () => { const n=$('inpNum').value.trim(), m=$('inpName').value.trim(); $('pcFrom').textContent = (n||m) ? `보내는 이 ${n} ${m}` : '보내는 이'; };
+$('inpNum').addEventListener('input', sync); $('inpName').addEventListener('input', sync); sync();
+
+async function refreshCount(){
+  try{ const {data,error}=await sb.rpc('dokdo_postcard_count'); if(error) throw error;
+    const r=Array.isArray(data)?data[0]:data; prizeTotal=r.prize_total; const n=Number(r.total);
+    $('stockNum').textContent=n; $('stockTotal').textContent=' / '+prizeTotal;
+    $('stockBar').style.width=Math.min(100,n/prizeTotal*100)+'%';
+    $('stockBox').classList.toggle('sold-out', n>=prizeTotal);
+    $('stockNote').textContent = n>=prizeTotal ? '상품은 모두 나갔지만, 엽서는 계속 보낼 수 있어요.' : `선착순 ${prizeTotal}명까지 ${PRIZE_NAME}를 드려요.`;
+  }catch(e){ $('stockNote').textContent='현황을 불러오지 못했어요. 잠시 후 다시 시도합니다.'; }
+}
+refreshCount(); setInterval(refreshCount, 8000);
+
+const pcText=$('pcText'), pcCount=$('pcCount');
+function updateCount(){ const n=pcText.value.trim().length; pcCount.textContent=`${n} / ${MAX}자`; pcCount.classList.toggle('short', n>0 && n<MIN); }
+pcText.addEventListener('input', ()=>{ updateCount(); $('formError').textContent=''; });
+
+function prizeCardHTML(rank){
+  if(rank<=prizeTotal) return `<div class="prize-award win"><div class="pa-icon">🎁</div><div class="pa-label">선착순 ${prizeTotal}명 안에 들었어요</div><div class="pa-name">${PRIZE_NAME}</div>
+    <div class="pa-desc">명단에 기록되어 있으니 이 화면을 닫아도 괜찮아요.</div><div class="pickup">${PICKUP_HTML}</div></div>`;
+  return `<div class="prize-award none"><div class="pa-icon">💌</div><div class="pa-label">상품은 마감되었어요</div><div class="pa-name">고마워요</div>
+    <div class="pa-desc">${PRIZE_NAME}는 선착순 ${prizeTotal}명까지만 드려요. 엽서는 독도에게 잘 전해 드릴게요.</div></div>`;
+}
+function showDone(num,name,rank,message,already){
+  $('entryScreen').classList.add('hidden'); $('doneScreen').classList.remove('hidden');
+  if(already){ $('doneSeal').textContent='🔒 이미 보냈어요'; $('doneTitle').textContent='엽서는 한 장만 보낼 수 있어요'; }
+  $('doneInfo').innerHTML=`<b>${esc(num)} ${esc(name)}</b> 님의 엽서`;
+  $('doneRank').textContent=`${rank}번째 엽서`;
+  $('prizeAward').innerHTML=prizeCardHTML(Number(rank));
+  $('pcEcho').innerHTML=`<div class="pe-label">독도에게 보낸 엽서</div>${esc(message)}`;
+  window.scrollTo({top:0});
+}
+$('submitBtn').addEventListener('click', async ()=>{
+  const rawNum=$('inpNum').value.trim(), name=$('inpName').value.trim(), msg=pcText.value.trim(), err=$('formError');
+  if(!rawNum||!name){ err.textContent='학번과 이름을 모두 입력해 주세요.'; return; }
+  if(msg.length<MIN){ err.textContent=`엽서를 ${MIN}자 이상 써 주세요. (현재 ${msg.length}자)`; pcText.focus(); return; }
+  if(!$('chkRead').checked){ err.textContent='안내 확인란에 체크해 주세요.'; return; }
+  err.textContent=''; const num=normNum(rawNum), btn=$('submitBtn'), orig=btn.textContent;
+  btn.disabled=true; btn.innerHTML='<span class="spinner"></span> 보내는 중…';
+  try{
+    const {data,error}=await sb.rpc('dokdo_postcard_submit',{p_num:num,p_name:name,p_message:msg}); if(error) throw error;
+    const r=(data||[])[0]; prizeTotal=r.prize_total||prizeTotal;
+    showDone(num,name,r.rank,r.message,r.status==='already');
+  }catch(e){ err.textContent='보내지 못했어요. 네트워크를 확인하고 다시 시도해 주세요.'; }
+  finally{ btn.disabled=false; btn.textContent=orig; }
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex">
+<title>독도의 날 행사 관리</title>
+<link href="https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@400;700&family=IBM+Plex+Sans+KR:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{--sea-night:#081a28;--sea-deep:#10293c;--mist:#e9eef1;--mist-dim:#a9bcc7;--ink:#0e1d27;--dawn:#eaa32c;--dawn-deep:#b97a13;--o:#2f8f77;--x:#c05a4e;
+    --c-quiz:#d6502b;--c-escape:#2b6cb0;--c-post:#2e7d4f;--c-run:#1f3a5f;}
+  *{box-sizing:border-box;}
+  html,body{margin:0;min-height:100%;background:radial-gradient(120% 60% at 50% 0%,#1b3d52 0%,var(--sea-deep) 45%,var(--sea-night) 100%);background-attachment:fixed;
+    color:var(--mist);font-family:'IBM Plex Sans KR',system-ui,sans-serif;-webkit-font-smoothing:antialiased;}
+  .wrap{max-width:1280px;margin:0 auto;padding:24px 16px 70px;}
+  .hidden{display:none !important;}
+  h1{font-family:'Gowun Batang',serif;font-size:26px;margin:0;}
+  .sub{font-size:12.5px;color:var(--mist-dim);margin-top:4px;}
+  .lock{max-width:380px;margin:12vh auto 0;background:var(--mist);color:var(--ink);border-radius:6px 6px 18px 18px;border-top:4px solid var(--dawn);padding:28px 24px;box-shadow:0 20px 44px rgba(0,0,0,.4);text-align:center;}
+  .lock h1{font-size:22px;margin-bottom:6px;} .lock p{font-size:13px;color:rgba(14,29,39,.65);margin:0 0 18px;}
+  .lock input{width:100%;padding:13px 14px;font-size:15px;border:1.5px solid rgba(14,29,39,.18);border-radius:10px;font-family:inherit;}
+  .lock input:focus{outline:none;border-color:var(--dawn);box-shadow:0 0 0 3px rgba(234,163,44,.25);}
+  .err{color:var(--x);font-size:13px;min-height:19px;margin:8px 0;}
+  .big{width:100%;background:var(--ink);color:var(--mist);border:0;border-radius:999px;padding:14px;font:inherit;font-weight:600;font-size:15.5px;cursor:pointer;}
+  .top{display:flex;justify-content:space-between;align-items:flex-end;gap:12px;flex-wrap:wrap;margin-bottom:16px;}
+  .acts{display:flex;gap:8px;flex-wrap:wrap;}
+  .btn{background:rgba(233,238,241,.12);color:var(--mist);border:1px solid rgba(233,238,241,.25);border-radius:999px;padding:8px 15px;font:inherit;font-size:13px;cursor:pointer;white-space:nowrap;text-decoration:none;display:inline-block;}
+  .btn:hover{background:rgba(233,238,241,.2);} .btn.gold{background:var(--dawn);color:var(--ink);border-color:var(--dawn);font-weight:600;}
+  .acttabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px;}
+  .at{flex:1 1 150px;background:rgba(233,238,241,.08);border:1.5px solid rgba(233,238,241,.18);border-radius:14px;padding:12px 14px;color:var(--mist);font:inherit;cursor:pointer;text-align:left;border-top:4px solid var(--c);}
+  .at b{display:block;font-size:14.5px;font-family:'Gowun Batang',serif;} .at span{font-size:12px;color:var(--mist-dim);}
+  .at.on{background:var(--mist);color:var(--ink);} .at.on span{color:rgba(14,29,39,.6);}
+  .stats{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:14px;}
+  .stat{background:var(--mist);color:var(--ink);border-radius:12px;border-top:3px solid var(--dawn);padding:10px 16px;min-width:118px;}
+  .stat b{display:block;font-family:'Gowun Batang',serif;font-size:24px;line-height:1.2;font-variant-numeric:tabular-nums;} .stat span{font-size:11.5px;color:rgba(14,29,39,.6);}
+  .stat.green{border-top-color:var(--o);} .stat.red{border-top-color:var(--x);}
+  .tools{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:14px;}
+  .tab{background:rgba(233,238,241,.1);color:var(--mist);border:1px solid rgba(233,238,241,.22);border-radius:999px;padding:8px 16px;font:inherit;font-size:13.5px;font-weight:600;cursor:pointer;}
+  .tab small{font-weight:500;opacity:.75;margin-left:5px;} .tab.on{background:var(--dawn);color:var(--ink);border-color:var(--dawn);}
+  .grow{flex:1;}
+  .search{padding:8px 14px;border-radius:999px;border:1.5px solid rgba(233,238,241,.25);background:rgba(233,238,241,.08);color:var(--mist);font:inherit;font-size:13.5px;width:210px;}
+  .search::placeholder{color:rgba(233,238,241,.45);} .search:focus{outline:none;border-color:var(--dawn);}
+  /* list rows (quiz/postcard) */
+  .list{background:var(--mist);color:var(--ink);border-radius:12px;overflow:hidden;}
+  .row{display:grid;grid-template-columns:52px 150px minmax(0,1fr) auto;gap:10px;align-items:center;padding:10px 14px;border-top:1px solid rgba(14,29,39,.09);}
+  .row:first-child{border-top:0;}
+  .row .rk{font-family:'Gowun Batang',serif;font-weight:700;color:var(--dawn-deep);text-align:center;font-size:15px;}
+  .row .nm{font-weight:700;font-size:14.5px;} .row .nm small{display:block;font-weight:400;font-size:11.5px;color:rgba(14,29,39,.55);}
+  .row .mid{font-size:13px;line-height:1.55;color:rgba(14,29,39,.8);word-break:break-word;}
+  .row .mid .sc{font-weight:600;} .row .mid .msg{white-space:pre-wrap;}
+  .row .act{display:flex;gap:6px;align-items:center;white-space:nowrap;}
+  .row.win{background:rgba(234,163,44,.09);} .row.done{background:rgba(47,143,119,.08);}
+  .pill{font-size:11.5px;padding:2px 9px;border-radius:99px;font-weight:600;white-space:nowrap;}
+  .pill.win{background:rgba(234,163,44,.3);color:#7d5309;} .pill.none{background:rgba(14,29,39,.08);color:rgba(14,29,39,.55);} .pill.done{background:rgba(47,143,119,.2);color:#1d6a57;}
+  .a{border:0;border-radius:8px;padding:8px 12px;font:inherit;font-size:13px;font-weight:600;cursor:pointer;}
+  .a.ok{background:var(--o);color:#fff;} .a.no{background:var(--x);color:#fff;} .a.un{background:#cfd8dc;color:var(--ink);} .a.g{background:var(--dawn);color:var(--ink);}
+  .a.del{background:none;color:rgba(14,29,39,.4);text-decoration:underline;font-weight:500;font-size:12px;padding:8px 4px;}
+  .a:disabled{opacity:.5;cursor:wait;}
+  .link{background:none;border:0;padding:0;font:inherit;font-size:11.5px;color:inherit;text-decoration:underline;cursor:pointer;opacity:.8;}
+  @media (max-width:640px){.row{grid-template-columns:40px minmax(0,1fr);} .row .mid{grid-column:2;} .row .act{grid-column:2;}}
+  /* cert cards */
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:12px;}
+  .card{background:var(--mist);color:var(--ink);border-radius:12px;overflow:hidden;display:flex;flex-direction:column;border-top:3px solid rgba(14,29,39,.15);}
+  .card.pending{border-top-color:var(--dawn);} .card.approved{border-top-color:var(--o);} .card.rejected{border-top-color:var(--x);opacity:.72;}
+  .shot{position:relative;aspect-ratio:4/3;background:#cfd8dc;cursor:zoom-in;border:0;padding:0;display:block;width:100%;}
+  .shot img{width:100%;height:100%;object-fit:cover;display:block;}
+  .shot .n{position:absolute;right:8px;bottom:8px;background:rgba(14,29,39,.78);color:#fff;font-size:11.5px;padding:3px 9px;border-radius:99px;}
+  .shot .rk{position:absolute;left:8px;top:8px;background:var(--ink);color:var(--dawn);font-family:'Gowun Batang',serif;font-weight:700;font-size:13px;padding:4px 10px;border-radius:99px;}
+  .body{padding:11px 13px 13px;display:flex;flex-direction:column;gap:8px;flex:1;}
+  .who{font-size:15px;font-weight:700;display:flex;justify-content:space-between;align-items:center;gap:6px;}
+  .meta{font-size:12px;color:rgba(14,29,39,.58);}
+  .badge{font-size:11.5px;padding:2px 9px;border-radius:99px;font-weight:600;white-space:nowrap;}
+  .badge.pending{background:rgba(234,163,44,.25);color:#7d5309;} .badge.approved{background:rgba(47,143,119,.2);color:#1d6a57;} .badge.rejected{background:rgba(192,90,78,.2);color:#9a3d32;}
+  .gift{font-size:12.5px;border-radius:8px;padding:7px 9px;display:flex;align-items:center;justify-content:space-between;gap:8px;}
+  .gift.yes{background:rgba(234,163,44,.16);color:#7d5309;} .gift.no{background:rgba(14,29,39,.06);color:rgba(14,29,39,.55);} .gift.done{background:rgba(47,143,119,.14);color:#1d6a57;}
+  .crow{display:flex;gap:6px;margin-top:auto;} .crow .a{flex:1;padding:9px 6px;} .crow .a.del{flex:0 0 auto;}
+  .empty{background:var(--mist);color:var(--ink);border-radius:12px;padding:30px;text-align:center;font-size:14px;line-height:1.8;}
+  .lb{position:fixed;inset:0;background:rgba(5,12,18,.94);z-index:40;display:flex;flex-direction:column;}
+  .lb-top{display:flex;justify-content:space-between;align-items:center;padding:12px 16px;gap:10px;flex-wrap:wrap;} .lb-top b{font-size:16px;}
+  .lb-main{flex:1;display:flex;align-items:center;justify-content:center;position:relative;min-height:0;padding:0 56px;}
+  .lb-main img{max-width:100%;max-height:100%;object-fit:contain;border-radius:6px;}
+  .nav{position:absolute;top:50%;transform:translateY(-50%);background:rgba(233,238,241,.14);color:#fff;border:0;width:44px;height:44px;border-radius:50%;font-size:22px;cursor:pointer;}
+  .nav.l{left:8px;} .nav.r{right:8px;}
+  .lb-bot{display:flex;justify-content:center;gap:8px;padding:12px 16px 18px;flex-wrap:wrap;} .lb-bot .a{min-width:110px;}
+  .keys{font-size:11.5px;color:var(--mist-dim);text-align:center;padding-bottom:10px;}
+  .toast{position:fixed;left:50%;bottom:26px;transform:translateX(-50%);background:var(--ink);color:var(--mist);padding:11px 22px;border-radius:999px;font-size:13.5px;box-shadow:0 10px 26px rgba(0,0,0,.4);z-index:60;}
+  @media (max-width:640px){.search{width:100%;} .grow{display:none;} .lb-main{padding:0 8px;} .nav{width:38px;height:38px;}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div id="lockView" class="lock">
+    <h1>독도의 날 행사 관리</h1>
+    <p>교사용 비밀번호를 입력해 주세요.</p>
+    <input id="pin" type="password" autocomplete="current-password" placeholder="비밀번호">
+    <div class="err" id="pinErr"></div>
+    <button class="big" id="pinBtn">들어가기</button>
+    <p style="margin:14px 0 0"><a href="index.html" style="color:inherit;font-size:12.5px">학생 화면으로</a></p>
+  </div>
+
+  <div id="mainView" class="hidden">
+    <div class="top">
+      <div><h1>독도의 날 행사 관리</h1><div class="sub" id="updated">불러오는 중…</div></div>
+      <div class="acts">
+        <button class="btn gold" id="csvBtn">상품 명단 내려받기</button>
+        <button class="btn" id="refreshBtn">새로고침</button>
+        <a class="btn" href="index.html">학생 화면</a>
+        <button class="btn" id="logoutBtn">나가기</button>
+      </div>
+    </div>
+
+    <div class="acttabs">
+      <button class="at" data-act="quiz" style="--c:var(--c-quiz)"><b>❓ 독도의 날 퀴즈</b><span id="t-quiz"></span></button>
+      <button class="at" data-act="escape" style="--c:var(--c-escape)"><b>🗝️ 독도 방탈출</b><span id="t-escape"></span></button>
+      <button class="at" data-act="postcard" style="--c:var(--c-post)"><b>✉️ 독도에게 엽서쓰기</b><span id="t-postcard"></span></button>
+      <button class="at" data-act="running" style="--c:var(--c-run)"><b>🏃 독도 수호 러닝</b><span id="t-running"></span></button>
+    </div>
+
+    <div class="stats" id="stats"></div>
+    <div class="tools" id="tools"></div>
+    <div id="content"></div>
+  </div>
+</div>
+
+<div class="lb hidden" id="lb">
+  <div class="lb-top"><div><b id="lbWho"></b> <span class="badge" id="lbBadge"></span><div class="sub" id="lbMeta"></div></div><button class="btn" id="lbClose">닫기 ✕</button></div>
+  <div class="lb-main"><button class="nav l" id="lbPrev" aria-label="이전 사진">‹</button><img id="lbImg" alt="인증 캡처"><button class="nav r" id="lbNext" aria-label="다음 사진">›</button></div>
+  <div class="lb-bot" id="lbActs"></div>
+  <div class="keys">← → 사진 넘기기 · A 승인 · R 반려 · N 다음 대기 접수 · Esc 닫기</div>
+</div>
+<div class="toast hidden" id="toast"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+/* ===== 설정 — 학생 페이지와 같은 값 ===== */
+const SUPABASE_URL = "https://trpsopuukecsmwntznrm.supabase.co";
+const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRycHNvcHV1a2Vjc213bnR6bnJtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTE4NzI4ODQsImV4cCI6MjEwNzQ0ODg4NH0.mYIsHq6ncguO0lJ9i2kHo2Hup2gDrEH5PBAjc90_5FE";
+const BUCKET = "dokdo-cert";
+const LIMIT = { quiz:100, postcard:100, running:50, escape:50 };   // 종류별 상품 수량
+const NAME  = { quiz:"독도의 날 퀴즈", escape:"독도 방탈출", postcard:"독도에게 엽서쓰기", running:"독도 수호 러닝" };
+const GIFT  = { quiz:"독도 키캡 키링", escape:"독도 볼펜·간식", postcard:"독도 김·독도 샤프", running:"스포츠 양말" };
+const STATUS = { pending:"대기", approved:"승인", rejected:"반려" };
+const PIN_KEY = "dokdo_admin_pin";
+
+const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+const $ = id => document.getElementById(id);
+let pin = "", act = "quiz", status = "pending", query = "", timer = null, lb = null;
+let data = { quiz:[], postcard:[], cert:[] };
+const busy = new Set();
+
+const esc = t => String(t ?? "").replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const urlOf = p => sb.storage.from(BUCKET).getPublicUrl(p).data.publicUrl;
+const imgs = s => String(s.image_path || "").split(",").filter(Boolean).map(urlOf);
+const fmt = iso => { if(!iso) return ""; const d=new Date(iso); return `${d.getMonth()+1}/${d.getDate()} `+d.toLocaleTimeString("ko-KR",{hour:"2-digit",minute:"2-digit",hour12:false}); };
+const stamp = iso => iso ? new Date(iso).toLocaleString("ko-KR",{hour12:false}) : "";
+const norm = t => String(t||"").replace(/\s+/g,"");
+const match = (num,name) => !query || String(num).includes(query) || norm(name).includes(query);
+function toast(m){ const t=$("toast"); t.textContent=m; t.classList.remove("hidden"); clearTimeout(toast._t); toast._t=setTimeout(()=>t.classList.add("hidden"),2200); }
+function errText(e){ const m=String(e?.message||e||"");
+  if(/unauthorized/i.test(m)) return "비밀번호가 맞지 않습니다.";
+  if(/could not find|schema cache/i.test(m)) return "SQL 설정(dokdo-site-supabase.sql)을 먼저 실행해 주세요.";
+  return "불러오지 못했어요. 네트워크를 확인해 주세요."; }
+
+/* ===== 데이터 ===== */
+async function rpc(fn, args){ const {data,error} = await sb.rpc(fn, args); if(error) throw error; return data||[]; }
+async function fetchAll(p){
+  const [q, pc, c] = await Promise.all([rpc("dokdo_admin_quiz_list",{p_pin:p}), rpc("dokdo_admin_postcard_list",{p_pin:p}), rpc("dokdo_cert_admin_list",{p_pin:p})]);
+  return { quiz:q, postcard:pc, cert:c };
+}
+async function login(p, silent){
+  $("pinBtn").disabled = true;
+  try{ data = await fetchAll(p); pin = p; try{ sessionStorage.setItem(PIN_KEY,p); }catch(e){}
+    $("lockView").classList.add("hidden"); $("mainView").classList.remove("hidden"); render();
+    clearInterval(timer); timer = setInterval(refresh, 10000);
+  }catch(e){ try{ sessionStorage.removeItem(PIN_KEY); }catch(_){} if(!silent) $("pinErr").textContent = errText(e); }
+  finally{ $("pinBtn").disabled = false; }
+}
+async function refresh(force){
+  if(!force && (document.hidden || busy.size || lb)) return;
+  try{ data = await fetchAll(pin); render(); if(force) toast("새로고침했어요."); }catch(e){ if(force) toast(errText(e)); }
+}
+$("pinBtn").onclick = () => { const v=$("pin").value; if(!v){ $("pinErr").textContent="비밀번호를 입력해 주세요."; return; } login(v,false); };
+$("pin").onkeydown = e => { if(e.key==="Enter") $("pinBtn").click(); };
+$("refreshBtn").onclick = () => refresh(true);
+$("logoutBtn").onclick = () => { try{ sessionStorage.removeItem(PIN_KEY); }catch(e){} location.reload(); };
+try{ const s=sessionStorage.getItem(PIN_KEY); if(s) login(s,true); }catch(e){}
+document.querySelectorAll("[data-act]").forEach(b => b.onclick = () => { act=b.dataset.act; status="pending"; query=""; render(); });
+
+/* ===== 상품 대상 계산 ===== */
+const certOf = k => data.cert.filter(s => s.kind===k);
+function certGifts(k){ return new Set(certOf(k).filter(s=>s.status==="approved").sort((a,b)=>new Date(a.created_at)-new Date(b.created_at)||a.id-b.id).slice(0,LIMIT[k]).map(s=>s.id)); }
+const quizWinners = () => data.quiz.filter(s => s.prize==="keyring");
+const postWinners = () => data.postcard.filter(s => Number(s.rank) <= LIMIT.postcard);
+
+/* ===== 화면 ===== */
+function render(){
+  document.querySelectorAll("[data-act]").forEach(b => b.classList.toggle("on", b.dataset.act===act));
+  $("t-quiz").textContent = `만점 ${quizWinners().length} · 미수령 ${quizWinners().filter(s=>!s.received_at).length}`;
+  $("t-postcard").textContent = `엽서 ${data.postcard.length} · 미수령 ${postWinners().filter(s=>!s.received_at).length}`;
+  for (const k of ["escape","running"]) $("t-"+k).textContent = `대기 ${certOf(k).filter(s=>s.status==="pending").length} · 승인 ${certOf(k).filter(s=>s.status==="approved").length}`;
+  $("updated").textContent = "10초마다 자동 갱신 · " + new Date().toLocaleTimeString("ko-KR",{hour12:false}) + " 기준";
+  if (act==="quiz") renderQuiz(); else if (act==="postcard") renderPostcard(); else renderCert(act);
+  if (lb) drawLb();
+}
+function stat(n, label, cls=""){ return `<div class="stat ${cls}"><b>${n}</b><span>${label}</span></div>`; }
+function toolsHTML(tabs){ return tabs.map(([k,l,n]) => `<button class="tab ${status===k?"on":""}" data-status="${k}">${l}<small>${n ?? ""}</small></button>`).join("")
+  + `<span class="grow"></span><input class="search" id="search" placeholder="학번 · 이름 검색" value="${esc(query)}">`; }
+function bindTools(){
+  document.querySelectorAll("[data-status]").forEach(b => b.onclick = () => { status=b.dataset.status; render(); });
+  const s=$("search"); s.oninput = e => { query=e.target.value.trim().replace(/\s+/g,""); const pos=s.selectionStart; render(); const n=$("search"); n.focus(); n.setSelectionRange(pos,pos); };
+}
+function giftBtn(fn, s){
+  return s.received_at
+    ? `<span class="pill done">수령 ${fmt(s.received_at)}</span><button class="link" data-mark="${fn}" data-id="${s.id}" data-v="0">취소</button>`
+    : `<button class="a g" data-mark="${fn}" data-id="${s.id}" data-v="1" ${busy.has(s.id)?"disabled":""}>수령</button>`;
+}
+
+function renderQuiz(){
+  const all=data.quiz, win=quizWinners(), got=win.filter(s=>s.received_at).length;
+  $("stats").innerHTML = stat(all.length,"응모") + stat(win.length,"만점 (키링 대상)") + stat(got,"수령 완료","green") + stat(win.length-got,"아직 안 받음","red") + stat(Math.max(0,LIMIT.quiz-win.length),"남은 키링");
+  $("tools").innerHTML = toolsHTML([["pending","수령 대기",win.length-got],["done","수령 완료",got],["win","만점자 전체",win.length],["all","전체 응모",all.length]]); bindTools();
+  let list = status==="pending" ? win.filter(s=>!s.received_at) : status==="done" ? win.filter(s=>s.received_at) : status==="win" ? win : all;
+  list = list.filter(s=>match(s.student_num,s.student_name));
+  $("content").innerHTML = list.length ? `<div class="list">${list.map(s => `
+    <div class="row ${s.prize==="keyring" ? (s.received_at?"done":"win") : ""}">
+      <div class="rk">${s.score}<small style="font-size:10px;color:rgba(14,29,39,.5)">/10</small></div>
+      <div class="nm">${esc(s.student_num)} ${esc(s.student_name)}<small>응모 ${fmt(s.created_at)}</small></div>
+      <div class="mid">${s.prize==="keyring" ? `<span class="pill win">⌨️ 키링 대상</span>` : `<span class="pill none">상품 없음</span>`}</div>
+      <div class="act">${s.prize==="keyring" ? giftBtn("dokdo_admin_quiz_mark", s) : ""}<button class="a del" data-del="dokdo_admin_quiz_delete" data-id="${s.id}">삭제</button></div>
+    </div>`).join("")}</div>` : `<div class="empty">${query?"검색 결과가 없어요.":"해당하는 학생이 없어요."}</div>`;
+}
+function renderPostcard(){
+  const all=data.postcard, win=postWinners(), got=win.filter(s=>s.received_at).length;
+  $("stats").innerHTML = stat(all.length,"엽서") + stat(win.length,`선착순 ${LIMIT.postcard}명 (상품 대상)`) + stat(got,"수령 완료","green") + stat(win.length-got,"아직 안 받음","red") + stat(Math.max(0,LIMIT.postcard-all.length),"남은 상품");
+  $("tools").innerHTML = toolsHTML([["pending","수령 대기",win.length-got],["done","수령 완료",got],["all","엽서 전체",all.length]]); bindTools();
+  let list = status==="pending" ? win.filter(s=>!s.received_at) : status==="done" ? win.filter(s=>s.received_at) : all;
+  list = list.filter(s=>match(s.student_num,s.student_name));
+  $("content").innerHTML = list.length ? `<div class="list">${list.map(s => { const w=Number(s.rank)<=LIMIT.postcard; return `
+    <div class="row ${w ? (s.received_at?"done":"win") : ""}">
+      <div class="rk">${s.rank}</div>
+      <div class="nm">${esc(s.student_num)} ${esc(s.student_name)}<small>${fmt(s.created_at)}</small></div>
+      <div class="mid"><span class="msg">${esc(s.message)}</span></div>
+      <div class="act">${w ? giftBtn("dokdo_admin_postcard_mark", s) : `<span class="pill none">상품 대상 아님</span>`}<button class="a del" data-del="dokdo_admin_postcard_delete" data-id="${s.id}">삭제</button></div>
+    </div>`; }).join("")}</div>` : `<div class="empty">${query?"검색 결과가 없어요.":"아직 엽서가 없어요."}</div>`;
+}
+function renderCert(k){
+  const all=certOf(k), gifts=certGifts(k), n=st=>all.filter(s=>s.status===st).length, given=all.filter(s=>gifts.has(s.id)&&s.gift_at).length;
+  $("stats").innerHTML = stat(n("pending"),"확인 대기") + stat(n("approved"),"승인") + stat(n("rejected"),"반려") + stat(`${given} / ${Math.min(n("approved"),LIMIT[k])}`,"선물 지급","green") + stat(Math.max(0,LIMIT[k]-n("approved")),"남은 선물");
+  if(!["pending","approved","rejected","all"].includes(status)) status="pending";
+  $("tools").innerHTML = toolsHTML([["pending","대기",n("pending")],["approved","승인",n("approved")],["rejected","반려",n("rejected")],["all","전체",all.length]]); bindTools();
+  const list = all.filter(s => (status==="all"||s.status===status) && match(s.student_num,s.student_name));
+  $("content").innerHTML = list.length ? `<div class="grid">${list.map(s=>cardHTML(s,gifts)).join("")}</div>`
+    : `<div class="empty">${query ? "검색 결과가 없어요." : status==="pending" ? "확인할 접수가 없어요. 🎉" : "해당하는 접수가 없어요."}</div>`;
+}
+function giftHTML(s,gifts){
+  if(s.status!=="approved") return "";
+  if(!gifts.has(s.id)) return `<div class="gift no">선착순 ${LIMIT[s.kind]}명 밖 · 선물 대상 아님</div>`;
+  return s.gift_at ? `<div class="gift done">🎁 지급 완료 ${fmt(s.gift_at)} <button class="link" data-gift="0" data-id="${s.id}">취소</button></div>`
+    : `<div class="gift yes">🎁 선물 대상 <button class="a g" style="padding:5px 12px" data-gift="1" data-id="${s.id}">지급</button></div>`;
+}
+function actHTML(s){ const d=busy.has(s.id)?"disabled":"";
+  return s.status==="pending" ? `<button class="a ok" data-set="approved" data-id="${s.id}" ${d}>승인</button><button class="a no" data-set="rejected" data-id="${s.id}" ${d}>반려</button>`
+    : `<button class="a un" data-set="pending" data-id="${s.id}" ${d}>대기로 되돌리기</button>`; }
+function cardHTML(s,gifts){ const u=imgs(s);
+  return `<div class="card ${s.status}"><button class="shot" data-open="${s.id}">${u[0]?`<img src="${u[0]}" alt="인증 캡처" loading="lazy">`:""}<span class="rk">${s.rank?s.rank+"번째":"–"}</span><span class="n">${u.length}장</span></button>
+    <div class="body"><div class="who"><span>${esc(s.student_num)} ${esc(s.student_name)}</span><span class="badge ${s.status}">${STATUS[s.status]}</span></div>
+    <div class="meta">접수 ${fmt(s.created_at)}</div>${giftHTML(s,gifts)}
+    <div class="crow">${actHTML(s)}<button class="a del" data-del="dokdo_cert_admin_delete" data-id="${s.id}">삭제</button></div></div></div>`; }
+
+/* ===== 동작 ===== */
+document.addEventListener("click", e => {
+  const t = e.target.closest("[data-set],[data-gift],[data-del],[data-open],[data-mark]"); if(!t) return;
+  const id = Number(t.dataset.id ?? t.dataset.open);
+  if (t.dataset.open) openLb(id);
+  else if (t.dataset.set) setStatus(id, t.dataset.set);
+  else if (t.dataset.gift) setGift(id, t.dataset.gift==="1");
+  else if (t.dataset.mark) setMark(t.dataset.mark, id, t.dataset.v==="1");
+  else if (t.dataset.del) delEntry(t.dataset.del, id);
+});
+async function call(id, fn, args, okMsg){
+  if(busy.has(id)) return false; busy.add(id); render();
+  try{ await rpc(fn, Object.assign({p_pin:pin, p_id:id}, args)); data = await fetchAll(pin); if(okMsg) toast(okMsg); return true; }
+  catch(e){ toast(/unauthorized/i.test(String(e.message)) ? "비밀번호가 바뀌었어요. 다시 로그인해 주세요." : errText(e)); return false; }
+  finally{ busy.delete(id); render(); }
+}
+const findCert = id => data.cert.find(s=>s.id===id);
+function setStatus(id, st){ const s=findCert(id); if(!s) return; return call(id,"dokdo_cert_admin_set",{p_status:st},`${s.student_name} · ${STATUS[st]}`); }
+function setGift(id, given){ const s=findCert(id); if(!s) return;
+  if(!given && !confirm(`${s.student_num} ${s.student_name} 학생의 선물 지급 표시를 취소할까요?`)) return;
+  return call(id,"dokdo_cert_admin_gift",{p_given:given}, given?`${s.student_name} · 선물 지급 완료`:"지급 표시를 취소했어요."); }
+function setMark(fn, id, received){
+  const s = (fn.includes("quiz") ? data.quiz : data.postcard).find(x=>x.id===id); if(!s) return;
+  if(!received && !confirm(`${s.student_num} ${s.student_name} 학생의 수령 표시를 취소할까요?`)) return;
+  return call(id, fn, {p_received:received}, received ? `${s.student_name} · 수령 완료` : "수령 표시를 취소했어요.");
+}
+function delEntry(fn, id){
+  const s = (fn.includes("quiz")?data.quiz:fn.includes("postcard")?data.postcard:data.cert).find(x=>x.id===id); if(!s) return;
+  if(!confirm(`${s.student_num} ${s.student_name} 기록을 완전히 삭제할까요?\n삭제하면 되돌릴 수 없고, 학생은 다시 참여할 수 있게 됩니다.`)) return;
+  if(lb && lb.id===id) closeLb();
+  return call(id, fn, {}, "삭제했어요.");
+}
+
+/* ===== 사진 크게 보기 (방탈출·러닝) ===== */
+function openLb(id){ lb={id,idx:0}; $("lb").classList.remove("hidden"); document.body.style.overflow="hidden"; drawLb(); }
+function closeLb(){ lb=null; $("lb").classList.add("hidden"); document.body.style.overflow=""; }
+function drawLb(){
+  const s=findCert(lb.id); if(!s){ closeLb(); return; }
+  const u=imgs(s); lb.idx=Math.max(0,Math.min(lb.idx,u.length-1));
+  $("lbImg").src=u[lb.idx]||""; $("lbWho").textContent=`${s.student_num} ${s.student_name}`;
+  $("lbBadge").className="badge "+s.status; $("lbBadge").textContent=STATUS[s.status];
+  $("lbMeta").textContent=`${NAME[s.kind]} · ${s.rank?s.rank+"번째 · ":""}접수 ${fmt(s.created_at)} · 사진 ${lb.idx+1} / ${u.length}`;
+  $("lbPrev").style.visibility=$("lbNext").style.visibility = u.length>1?"visible":"hidden";
+  $("lbActs").innerHTML = actHTML(s) + giftHTML(s,certGifts(s.kind)) + `<a class="btn" href="${u[lb.idx]||"#"}" target="_blank" rel="noopener">원본 열기</a>`;
+}
+function step(d){ if(!lb) return; const n=imgs(findCert(lb.id)).length; lb.idx=(lb.idx+d+n)%n; drawLb(); }
+function nextPending(){
+  const list=certOf(act).filter(s=>s.status==="pending");
+  if(!list.length){ toast("남은 대기 접수가 없어요."); closeLb(); return; }
+  const cur=list.findIndex(s=>s.id===lb?.id); openLb(list[(cur+1)%list.length].id);
+}
+$("lbClose").onclick=closeLb; $("lbPrev").onclick=()=>step(-1); $("lbNext").onclick=()=>step(1);
+$("lb").addEventListener("click", e=>{ if(e.target.id==="lb"||e.target.classList.contains("lb-main")) closeLb(); });
+document.addEventListener("keydown", async e=>{
+  if(!lb || e.target.tagName==="INPUT") return; const s=findCert(lb.id); const k=e.key.toLowerCase();
+  if(e.key==="Escape") closeLb(); else if(e.key==="ArrowLeft") step(-1); else if(e.key==="ArrowRight") step(1);
+  else if(k==="n") nextPending();
+  else if(s && s.status==="pending" && (k==="a"||k==="r")){ const ok=await setStatus(s.id, k==="a"?"approved":"rejected"); if(ok) nextPending(); }
+});
+
+/* ===== 상품 명단 CSV (엑셀) ===== */
+$("csvBtn").onclick = () => {
+  const rows=[["활동","순번","학번","이름","상품","기록","참여시각","수령/지급"]];
+  quizWinners().forEach((s,i)=>rows.push([NAME.quiz,i+1,s.student_num,s.student_name,GIFT.quiz,`${s.score}/10`,stamp(s.created_at),stamp(s.received_at)]));
+  postWinners().forEach(s=>rows.push([NAME.postcard,s.rank,s.student_num,s.student_name,GIFT.postcard,s.message,stamp(s.created_at),stamp(s.received_at)]));
+  for(const k of ["escape","running"]){ const g=certGifts(k);
+    certOf(k).filter(s=>g.has(s.id)).sort((a,b)=>new Date(a.created_at)-new Date(b.created_at)).forEach((s,i)=>rows.push([NAME[k],i+1,s.student_num,s.student_name,GIFT[k],"승인",stamp(s.created_at),stamp(s.gift_at)])); }
+  if(rows.length===1){ toast("아직 상품 대상자가 없어요."); return; }
+  const csv="﻿"+rows.map(r=>r.map(v=>`"${String(v??"").replace(/"/g,'""')}"`).join(",")).join("\r\n");
+  const a=document.createElement("a"); a.href=URL.createObjectURL(new Blob([csv],{type:"text/csv;charset=utf-8"}));
+  a.download=`독도의날_상품명단_${new Date().toISOString().slice(0,10)}.csv`; a.click(); setTimeout(()=>URL.revokeObjectURL(a.href),1000);
+};
+</script>
+</body>
+</html>
