@@ -114,7 +114,7 @@
       <path d="M0 47 H150" stroke="#0e1d27" stroke-opacity=".35" stroke-width="1.2"/>
       <path d="M8 53 q10 -3 20 0 t20 0 t20 0 t20 0 t20 0 t20 0" fill="none" stroke="#0e1d27" stroke-opacity=".18" stroke-width="1.2"/>
     </svg>
-    <p class="event-date">활동 3 · 10월 19일 ~ 25일</p>
+    <p class="event-date">활동 3 · 10월 19일 ~ 23일</p>
     <h1 class="event-title">독도에게 엽서쓰기</h1>
     <p class="event-sub">짧아도 좋으니 독도에게 하고 싶은 말을 남겨 주세요.<br>선착순 100명에게 독도 김과 독도 샤프를 드려요.</p>
     
@@ -179,10 +179,16 @@ const qs = new URLSearchParams(location.search);
 function toast(m){ let t=document.querySelector('.toast'); if(!t){t=document.createElement('div');t.className='toast';document.body.appendChild(t);}
   t.textContent=m; t.style.display='block'; clearTimeout(toast._t); toast._t=setTimeout(()=>t.style.display='none',2200); }
 function prefill(){ const n=qs.get('num'), m=qs.get('name'); if(n&&$('inpNum')) $('inpNum').value=n; if(m&&$('inpName')) $('inpName').value=m; }
+/* ===== 참여 마감 (이 시각부터 접수 화면이 닫혀요) ===== */
+const CLOSES_AT = new Date('2026-10-24T00:00:00+09:00');   // 10월 23일(금) 자정까지
+const CLOSED_HTML = '<div class="panel result-panel"><div class="locked-icon">⏰</div><h2>참여 기간이 끝났어요</h2><p class="lead">독도의 날 행사 참여는 <b>10월 23일(금)</b>까지였어요.<br>참여해 준 모든 학생에게 고마워요.</p><div class="next-links"><a class="big-btn ghost" href="index.html">행사 홈으로</a></div></div>';
+function closeIfOver(){ if (Date.now() < CLOSES_AT) return false; const e=$('entryScreen'); if(e) e.innerHTML=CLOSED_HTML; return true; }
+function closedByServer(e){ return /closed/i.test(String(e && e.message || '')); }
 function withStudent(href){ const n=$('inpNum')?.value.trim(), m=$('inpName')?.value.trim(); return n&&m ? href+'?num='+encodeURIComponent(n)+'&name='+encodeURIComponent(m) : href; }
 </script>
 
 <script>
+if (!closeIfOver()) {
 const MIN=50, MAX=200, PRIZE_NAME="독도 김 · 독도 샤프";
 let prizeTotal=100;
 prefill();
@@ -230,9 +236,10 @@ $('submitBtn').addEventListener('click', async ()=>{
     const {data,error}=await sb.rpc('dokdo_postcard_submit',{p_num:num,p_name:name,p_message:msg}); if(error) throw error;
     const r=(data||[])[0]; prizeTotal=r.prize_total||prizeTotal;
     showDone(num,name,r.rank,r.message,r.status==='already');
-  }catch(e){ err.textContent='보내지 못했어요. 네트워크를 확인하고 다시 시도해 주세요.'; }
+  }catch(e){ if(closedByServer(e)) { closeIfOver() || ($('entryScreen').innerHTML=CLOSED_HTML); return; } err.textContent='보내지 못했어요. 네트워크를 확인하고 다시 시도해 주세요.'; }
   finally{ btn.disabled=false; btn.textContent=orig; }
 });
+}
 </script>
 </body>
 </html>
